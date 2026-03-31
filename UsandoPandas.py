@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import pywhatkit as pwk
 def ubicacionArchivo ():
     #Abriendo el archivo Reporte
     usuario=os.path.expanduser("~")
@@ -10,7 +11,7 @@ def ubicacionArchivo ():
     else:
         print("No hay ningun archivo ")
         return None
-
+"""
 def reportePepsiCo ():
     df=ubicacionArchivo()
     if df is not None:
@@ -28,7 +29,26 @@ def reportePepsiCo ():
                 #Debe conocer los elementos bajo stock para poder imprimir los que hagan falta
                 print("-->PEDIDO PARA PEPSI\n")
                 print(bajoStockPepsi[["Nombre", "Piezas"]].to_markdown(index=False))
-reportePepsiCo()
+                return bajoStockPepsi
+def mandarPedidoPepsi(df_pedidoPepsi):
+    if df_pedidoPepsi is not None:
+        lineas_pedido=[]
+        for _, fila in df_pedidoPepsi.iterrows():
+            lineas_pedido.append(f"- {fila['Nombre']}: {fila['Piezas']} pz")
+        cuerpo_mensaje = "\n".join(lineas_pedido)
+        mensaje_final = f"Hola, requiero el siguiente pedido 📦:\n\n{cuerpo_mensaje}"
+        numero_proveedor = "+525563372685"
+        print("\nEnviando pedido por WhatsApp...")
+        try:
+            # Enviamos instantáneamente
+            pwk.sendwhatmsg_instantly(numero_proveedor, mensaje_final, wait_time=15, tab_close=True)
+            print("¡Mensaje enviado con éxito!")
+        except Exception as e:
+            print(f"Error al enviar: {e}")
+datos_para_pedido = reportePepsiCo()
+if datos_para_pedido is not None:
+    mandarPedidoPepsi(datos_para_pedido)
+"""
 
 def reporteCocaCola ():
     df=ubicacionArchivo()
@@ -44,4 +64,21 @@ def reporteCocaCola ():
             else:
                 print("-->PEDIDO PARA COCACOLA\n")
                 print(bajoStockCocaCola[["Nombre", "Piezas"]].to_markdown(index=False))
-reporteCocaCola()
+                return bajoStockCocaCola
+def mandarPedidoCocaCola(df_pedidoCoca):
+    if df_pedidoCoca is not None:
+        lineas_pedido=[]
+        for _, fila in df_pedidoCoca.iterrows():
+            lineas_pedido.append(f"- {fila['Nombre']}: {fila['Piezas']} pz")
+        cuerpo_mensaje = "\n".join(lineas_pedido)
+        mensaje_final = f"Hola, requiero el siguiente pedido 📦:\n\n{cuerpo_mensaje}"
+        numero_proveedor = "+525563372685"
+        print("\nEnviando pedido por WhatsApp...")
+        try:
+            pwk.sendwhatmsg_instantly(numero_proveedor,mensaje_final,wait_time=15,tab_close=True)
+            print("¡Mensaje enviado con éxito!")
+        except Exception as e:
+            print(f"Error al enviar: {e}")
+datos_para_pedido=reporteCocaCola()
+if datos_para_pedido is not None:
+    mandarPedidoCocaCola(datos_para_pedido)
