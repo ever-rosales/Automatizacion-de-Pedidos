@@ -50,6 +50,7 @@ if datos_para_pedido is not None:
     mandarPedidoPepsi(datos_para_pedido)
 """
 
+"""
 def reporteCocaCola ():
     df=ubicacionArchivo()
     if df is not None:
@@ -82,3 +83,38 @@ def mandarPedidoCocaCola(df_pedidoCoca):
 datos_para_pedido=reporteCocaCola()
 if datos_para_pedido is not None:
     mandarPedidoCocaCola(datos_para_pedido)
+"""
+
+def reportePeñafiel ():
+    df=ubicacionArchivo()
+    if df is not None:
+        reportePeñafiel_df=df[df["Marca"].str.upper()=="PEÑAFIEL"]
+        if reportePeñafiel_df.empty:
+            print("No se a encontrado registro para PEÑAFIEL")
+        else:
+            filtroPeñafiel=(df["Marca"].str.upper()=="PEÑAFIEL") & (df["Stock"]<=df["Stock Minimo"])
+            bajoStockPeñafiel=df[filtroPeñafiel]
+            if bajoStockPeñafiel.empty:
+                print("Tienes productos suficentes")
+            else:
+                print("-->PEDIDO PARA PEÑAFIEL\n")
+                print(bajoStockPeñafiel[["Nombre", "Piezas"]].to_markdown(index=False))
+                return bajoStockPeñafiel
+
+def mandarPedidoPeñafiel(df_pedidoPeñafiel):
+    if df_pedidoPeñafiel is not None:
+        lineas_pedido=[]
+        for _, fila in df_pedidoPeñafiel.iterrows():
+            lineas_pedido.append(f"- {fila['Nombre']}: {fila['Piezas']} pz")
+        cuerpo_mensaje = "\n".join(lineas_pedido)
+        mensaje_final = f"Hola, requiero el siguiente pedido 📦:\n\n{cuerpo_mensaje}"
+        numero_proveedor = "+525563372685"
+        print("\nEnviando pedido por WhatsApp...")
+        try:
+            pwk.sendwhatmsg_instantly(numero_proveedor,mensaje_final,wait_time=15,tab_close=True)
+            print("¡Mensaje enviado con éxito!")
+        except Exception as e:
+            print(f"Error al enviar: {e}")
+datos_para_pedido=reportePeñafiel()
+if datos_para_pedido is not None:
+    mandarPedidoPeñafiel(datos_para_pedido)
